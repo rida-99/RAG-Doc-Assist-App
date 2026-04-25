@@ -1,0 +1,19 @@
+rag_app/
+│
+├── app.py                # FastAPI entry
+├── config.py
+│
+├── services/
+│   ├── ingestion.py      # file loading + chunking
+│   ├── embedding.py      # embedding model
+│   ├── vector_store.py   # ChromaDB logic
+│   ├── rag_pipeline.py   # retrieval + LLM
+│
+├── models/
+│   └── schemas.py        # request/response models
+│
+├── data/                 # uploaded files
+├── db/                   # chroma storage
+│
+├── requirements.txt
+└── README.md
