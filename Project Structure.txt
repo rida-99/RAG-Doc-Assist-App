@@ -17,3 +17,46 @@ rag_app/
 │
 ├── requirements.txt
 └── README.md
+
+
+
+
+
+2.
+
+rag_app/
+├── app/
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── routes/
+│   │   │   ├── upload.py          # POST /documents/upload
+│   │   │   ├── query.py           # POST /query
+│   │   │   └── documents.py       # GET/DELETE /documents
+│   │   └── middleware.py          # auth, rate limiting, request ID
+│   ├── ingestion/
+│   │   ├── validator.py           # file type, size, virus scan hooks
+│   │   ├── parser.py              # wraps Unstructured IO (your Part 1)
+│   │   ├── chunker.py             # your ChunkingStrategy, extended
+│   │   ├── embedder.py            # your SentenceTransformer logic
+│   │   └── pipeline.py            # orchestrates the above
+│   ├── retrieval/
+│   │   ├── vector_store.py        # ChromaDB adapter
+│   │   ├── retriever.py           # your retrieve() function, extended
+│   │   └── reranker.py            # optional cross-encoder reranking
+│   ├── generation/
+│   │   ├── prompt_builder.py      # your build_prompt(), extended
+│   │   └── llm_router.py          # your ask_ollama/openai/claude backends
+│   ├── models/
+│   │   └── schemas.py             # Pydantic models for all I/O
+│   └── core/
+│       ├── config.py              # settings via pydantic-settings
+│       ├── logging.py
+│       └── exceptions.py
+├── storage/
+│   ├── uploads/                   # raw files land here temporarily
+│   ├── processed/                 # sanitised originals kept long-term
+│   └── vector_store/              # your ChromaDB persistent path
+├── tests/
+├── .env
+├── pyproject.toml
+└── docker-compose.yml

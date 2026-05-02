@@ -1,0 +1,13 @@
+vector_store/
+documents/
+logs/
+.env
+storage/
+
+More.txt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
