@@ -11,3 +11,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pdf
+*.html
+*.docx
+*.pptx
