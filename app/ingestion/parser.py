@@ -110,3 +110,22 @@ class DocumentParser:
             })
 
         return pages
+    
+# test parser
+if __name__ == "__main__":
+    import sys
+    from pprint import pprint
+
+    if len(sys.argv) < 2:
+        print("Usage: python parser.py <file_path>")
+        sys.exit(1)
+
+    file_path = Path(sys.argv[1])
+    doc_id = str(uuid.uuid4())
+
+    pages = DocumentParser.parse_document(file_path, doc_id)
+    pprint(pages)
+
+
+# run with
+# python -m app.ingestion.parser ".\app\ingestion\RAG text.pdf"

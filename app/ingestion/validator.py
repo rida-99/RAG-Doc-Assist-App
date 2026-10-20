@@ -35,3 +35,22 @@ async def validate_and_save(file: UploadFile) -> tuple[Path, str]:
 
     return dest, sha256
 
+# test validator
+if __name__ == "__main__":
+    import asyncio
+    import sys
+    from pprint import pprint
+    from fastapi import UploadFile
+
+    if len(sys.argv) < 2:
+        print("Usage: python validator.py <file_path>")
+        sys.exit(1)
+
+    file_path = Path(sys.argv[1])
+    upload_file = UploadFile(filename=file_path.name, file=open(file_path, "rb"))
+
+    dest, sha256 = asyncio.run(validate_and_save(upload_file))
+    pprint({"dest": str(dest), "sha256": sha256})
+
+# run with
+# python -m app.ingestion.validator ".\app\ingestion\RAG text.pdf"

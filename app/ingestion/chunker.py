@@ -1,5 +1,6 @@
 # app/ingestion/chunker.py
 
+from pathlib import Path
 from typing import List, Dict
 import uuid
 
@@ -9,6 +10,7 @@ from langchain_text_splitters import (
 )
 
 from app.core.config import settings
+from app.ingestion.parser import DocumentParser
 
 
 class ChunkingStrategy:
@@ -108,3 +110,24 @@ class ChunkingStrategy:
                 )
 
         return chunks
+
+# test chunker
+if __name__ == "__main__":
+    import sys
+    from pprint import pprint
+
+    if len(sys.argv) < 2:
+        print("Usage: python chunker.py <file_path>")
+        sys.exit(1)
+
+    file_path = Path(sys.argv[1])
+    doc_id = str(uuid.uuid4())
+
+    pages = DocumentParser.parse_document(file_path, doc_id)
+    chunker = ChunkingStrategy()
+    chunks = chunker.chunk_pages(pages)
+
+    pprint(chunks)
+
+# run with
+# python -m app.ingestion.chunker ".\app\ingestion\RAG text.pdf"
