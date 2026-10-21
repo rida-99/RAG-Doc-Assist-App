@@ -45,7 +45,16 @@ rag_app/
 │   │   └── reranker.py            # optional cross-encoder reranking
 │   ├── generation/
 │   │   ├── prompt_builder.py      # your build_prompt(), extended
-│   │   └── llm_router.py          # your ask_ollama/openai/claude backends
+│   │   ├── llm_router.py          # your ask_ollama/openai/claude backends
+│   │   └── providers              # 
+│   │       ├── base.py
+│   │       ├── ollama.py
+│   │       ├── openai.py
+│   │       └── anthropic.py
+│   ├── db
+│   │   ├── session.py
+│   │   ├── models.py
+│   │   └── repositories.py
 │   ├── models/
 │   │   └── schemas.py             # Pydantic models for all I/O
 │   └── core/
@@ -60,3 +69,60 @@ rag_app/
 ├── .env
 ├── pyproject.toml
 └── docker-compose.yml
+
+
+3.
+
+rag_app/
+├── app/
+│   ├── api/                                  # API layer: exposes application endpoints
+│   │   ├── __init__.py                       # Initializes the API package
+│   │   ├── routes/
+│   │   │   ├── upload.py                     # POST /documents/upload: upload and ingest documents
+│   │   │   ├── query.py                      # POST /query: answer user questions using RAG
+│   │   │   └── documents.py                  # GET/DELETE /documents: list and delete documents
+│   │   └── middleware.py                     # Authentication, rate limiting, and request ID handling
+│   │
+│   ├── ingestion/                            # Document ingestion and preprocessing pipeline
+│   │   ├── validator.py                      # Validates file type, size, and security; supports virus scanning
+│   │   ├── parser.py                         # Extracts text and metadata from documents using Unstructured IO
+│   │   ├── chunker.py                        # Splits extracted content into smaller, overlapping text chunks
+│   │   ├── embedder.py                       # Generates vector embeddings using SentenceTransformers
+│   │   └── pipeline.py                       # Orchestrates validation, parsing, chunking, and embedding
+│   │
+│   ├── retrieval/                            # Retrieves relevant document chunks for user queries
+│   │   ├── vector_store.py                   # ChromaDB adapter for storing, searching, and deleting vectors
+│   │   ├── retriever.py                      # Retrieves the most relevant chunks using semantic similarity
+│   │   └── reranker.py                       # Optionally reranks retrieved chunks using a cross-encoder
+│   │
+│   ├── generation/                           # Builds prompts and generates answers using LLMs
+│   │   ├── prompt_builder.py                 # Builds prompts from the user query and retrieved context
+│   │   ├── llm_router.py                     # Selects and invokes the configured LLM provider
+│   │   └── providers/                        # Provider-specific LLM implementations
+│   │       ├── base.py                       # Defines the common interface for all LLM providers
+│   │       ├── ollama.py                     # Integrates locally hosted Ollama models
+│   │       ├── openai.py                     # Integrates OpenAI models through the API
+│   │       └── anthropic.py                  # Integrates Anthropic Claude models through the API
+│   │
+│   ├── db/                                   # Relational database access and persistence
+│   │   ├── session.py                        # Configures database connections and sessions
+│   │   ├── models.py                         # Defines database tables and ORM models
+│   │   └── repositories.py                   # Encapsulates database queries and CRUD operations
+│   │
+│   ├── models/                               # Application data models and validation schemas
+│   │   └── schemas.py                        # Pydantic schemas for API requests and responses
+│   │
+│   └── core/                                 # Shared application infrastructure and configuration
+│       ├── config.py                         # Loads environment variables and application settings
+│       ├── logging.py                        # Configures application logging and log formatting
+│       └── exceptions.py                     # Defines custom exceptions and centralized error handling
+│
+├── storage/                                  # Persistent storage for uploaded and processed data
+│   ├── uploads/                              # Temporarily stores incoming files before processing
+│   ├── processed/                            # Stores validated and sanitized original documents
+│   └── vector_store/                         # Stores persistent ChromaDB data and vector indexes
+│
+├── tests/                                    # Unit, integration, and end-to-end tests
+├── .env                                      # Environment variables and local secrets (never commit)
+├── pyproject.toml                            # Project metadata, dependencies, and tool configuration
+└── docker-compose.yml                        # Defines and runs the application's containerized services

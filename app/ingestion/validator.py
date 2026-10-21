@@ -32,6 +32,9 @@ async def validate_and_save(file: UploadFile) -> tuple[Path, str]:
     dest = settings.processed_dir / f"{sha256}{suffix}"  # join path and filename
     if not dest.exists():
         dest.write_bytes(content) # binary file write
+    else:
+        print(f"File already exists: {dest}")
+        print(f"SHA256 already exists: {sha256}")
 
     return dest, sha256
 
