@@ -182,5 +182,19 @@ if __name__ == "__main__":
     result = asyncio.run(pipeline.ingest(upload_file))
     pprint(result)
     
+    
+    from app.retrieval.vector_store import VectorStore
+
+    store = VectorStore(
+        persist_directory="storage/test_vector_store",
+        collection_name="test_documents",
+    )
+    count = store.upsert_chunks(result["chunks"])
+    print(f"Successfully stored {count} chunks.")
+
+    print("Number of chunks:", len(result["chunks"]))
+    print("First chunk keys:", result["chunks"][0].keys())
+    print("First chunk metadata:", result["chunks"][0]["metadata"])
+    
 # run with
 # python -m app.ingestion.pipeline ".\app\ingestion\RAG text.pdf"

@@ -35,7 +35,8 @@ async def validate_and_save(file: UploadFile) -> tuple[Path, str]:
     else:
         print(f"File already exists: {dest}")
         print(f"SHA256 already exists: {sha256}")
-
+        raise HTTPException(409, "File already exists.")
+        
     return dest, sha256
 
 # test validator

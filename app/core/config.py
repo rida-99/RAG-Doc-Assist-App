@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     # Storage
     upload_dir: Path = Path("storage/uploads")
     processed_dir: Path = Path("storage/processed")
-    vector_store_path: Path = Path("storage/vector_store")
+    vector_store_dir: Path = Path("storage/vector_store")
     collection_name: str = "Assit_documents"
 
     # Embedding
@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     # Retrieval
     top_k: int = 5
     min_score: float = 0.8
+    retrieval_top_k: int = 5
+    
+    # Reranking
+    rerank_model: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+    # rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
     # LLM
     default_llm: str = "claude"  # ollama | openai | claude
