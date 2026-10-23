@@ -2,6 +2,7 @@ vector_store/
 documents/
 logs/
 .env
+app/tests/output/
 storage/
 
 More.txt
