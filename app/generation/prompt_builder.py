@@ -141,6 +141,46 @@ def build_context(
     return "\n\n".join(sections)
 
 
+def extract_sources(documents: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return deduplicated source metadata for the retrieved chunks."""
+    sources = []
+    seen = set()
+
+    for index, document in enumerate(documents, start=1):
+        if not _get_text(document):
+            continue
+
+        metadata = _get_metadata(document)
+
+        file_name = (
+            metadata.get("file_name")
+            or metadata.get("source")
+            or document.get("source")
+            or "Unknown source"
+        )
+        page = (
+            metadata.get("page_number")
+            or metadata.get("page")
+            or document.get("page_number")
+        )
+
+        key = (file_name, page)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        sources.append(
+            {
+                "document_index": index,
+                "file_name": str(file_name),
+                "page": page,
+                "distance": document.get("distance"),
+            }
+        )
+
+    return sources
+
+
 def build_prompt(
     query: str,
     documents: Sequence[dict[str, Any]],
@@ -185,6 +225,34 @@ def build_prompt(
         <answer>
         """.strip()
 
+
+def build_prompt_payload(
+    query: str,
+    documents: Sequence[dict[str, Any]],
+    system_instruction: Optional[str] = None,
+    max_context_chars: int = 12000,
+) -> dict[str, Any]:
+    """Build a payload for LLMRouter: messages + sources + stats."""
+    prompt = build_prompt(
+        query=query,
+        documents=documents,
+        system_instruction=system_instruction,
+        max_context_chars=max_context_chars,
+    )
+
+    sources = extract_sources(documents)
+
+    return {
+        "messages": [{"role": "user", "content": prompt}],
+        "sources": sources,
+        "context_stats": {
+            "retrieved_chunks": len(documents),
+            "sources_count": len(sources),
+            "prompt_chars": len(prompt),
+        },
+    }
+
+
 # test prompt builder 
 if __name__ == "__main__":
     from app.retrieval.retriever import Retriever, VectorStore, Embedder
@@ -208,3 +276,4 @@ if __name__ == "__main__":
 
 # run with
 # python -m app.generation.prompt_builder
+
