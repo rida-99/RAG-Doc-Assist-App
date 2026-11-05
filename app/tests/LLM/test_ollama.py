@@ -56,6 +56,3 @@ if __name__ == "__main__":
 # run with
 # python -m app.tests.LLM.test_ollama
 
-git add .
-git commit -m "feat(generation): add LLM router and provider architecture"
-git push
